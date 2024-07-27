@@ -1,0 +1,10 @@
+bin/
+bin-int/
+.vscode/
+.cache/
+
+run.sh
+Makefile
+Core/Makefile
+Fragmentbox/Makefile
+vender/SDL2/build
