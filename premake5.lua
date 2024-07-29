@@ -29,7 +29,7 @@ project "tracy"
     }
 
     defines {
-        "TRACY_ENABLE"
+        "TRACY_ENABLE",
     }
 
     filter "configurations:Debug"
@@ -65,13 +65,21 @@ project "Core"
         "vender/tracy/public",
         "vender/spdlog/include",
         "vender/SDL2/include",
+        "vender/glad/include",
     }
 
     filter "system:linux"
-        systemversion "latest"
-
+        
         defines {
             "FM_PLATFORM_LINUX",
+            "FM_RENDER_API_OPENGL"
+        }
+
+    filter "system:windows"
+        
+        defines {
+            "FM_PLATFORM_WINDOWS",
+            "FM_RENDER_API_OPENGL"
         }
 
     filter "configurations:Debug"
@@ -126,13 +134,21 @@ project "Fragmentbox"
     }
 
     filter "system:linux"
-        systemversion "latest"
         
         defines {
-            "FM_PLATFORM_LINUX"
+            "FM_PLATFORM_LINUX",
+            "FM_RENDER_API_OPENGL"
         }
+
+    filter "system:windows"
         
-        filter "configurations:Debug"
+        defines {
+            "FM_PLATFORM_WINDOWS",
+            "FM_RENDER_API_OPENGL"
+        }
+
+        
+    filter "configurations:Debug"
         defines { "FM_DEBUG", "FM_PROFILE" }
         buildoptions "-g"
         runtime "Debug"

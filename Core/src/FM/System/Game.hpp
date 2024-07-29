@@ -5,16 +5,13 @@
 
 #include "FM/Core/Assret.hpp"
 #include "FM/Core/Profile.hpp"
-#include "FM/Core/GLCall.hpp"
 
 #include "FM/System/Scene.hpp"
 #include "FM/System/Time/Time.hpp"
 #include "FM/System/Input/Keyboard.hpp"
 #include "FM/System/Input/Mouse.hpp"
-#include "FM/System/Renderer/VertexBuffer.hpp"
-#include "FM/System/Renderer/IndexBuffer.hpp"
-#include "FM/System/Renderer/ElementBuffer.hpp"
-#include "FM/System/Renderer/Shader.hpp"
+
+#include "FM/Platfrom/Renderer/API.hpp"
 
 namespace fm
 {
@@ -25,16 +22,6 @@ namespace fm
             : m_window(NULL), m_quit(false), m_running(false)
         {
             Time::init();
-
-            FM_LOG_INIT();
-            FM_SDL_CALL(SDL_Init(SDL_INIT_VIDEO));
-
-            FM_SDL_CALL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
-            FM_SDL_CALL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
-            FM_SDL_CALL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
-
-            FM_SDL_CALL(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1));
-            FM_SDL_CALL(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24));
 
             m_window = SDL_CreateWindow(
                 name,
@@ -51,18 +38,7 @@ namespace fm
                 exit(EXIT_FAILURE);
             }
 
-            SDL_GLContext context;
-            context = SDL_GL_CreateContext(m_window);
-            if (context == NULL)
-            {
-                FM_SDL_LOG_ERROR;
-                exit(EXIT_FAILURE);
-            }
-            
-            gladLoadGLLoader(SDL_GL_GetProcAddress);
-            FM_LOG_INFO("vendor:   {}", (const char*)glGetString(GL_VENDOR));
-            FM_LOG_INFO("renderer: {}", (const char*)glGetString(GL_RENDERER));
-            FM_LOG_INFO("verion:  {}", (const char*)glGetString(GL_VERSION));
+            Renderer::Init(m_window);
         }
 
         ~Game()
@@ -93,7 +69,7 @@ namespace fm
         void run()
         {
 			m_running = true;
-            FM_ASSERT(m_scene_stack.size() == 0, "no scene was push");
+            FM_ASSERT(m_scene_stack.size() != 0, "no scene was push");
 			m_scene_stack.top()->startup();
             
             while (m_quit == false)

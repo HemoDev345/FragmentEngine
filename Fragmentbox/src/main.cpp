@@ -1,6 +1,8 @@
 #include "FM/FM.hpp"
 #include "tracy/Tracy.hpp"
-#include <math.h>
+
+#include "FM/Platfrom/Renderer/OpenGL/GLCall.hpp"
+#include "glad/glad.h"
 
 
 class FragmentBox : public fm::Scene
@@ -18,30 +20,30 @@ public:
     
     void startup() override
     {
-            const float vertices[] = {
-                 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-                -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            };
+        const float vertices[] = {
+                0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+                0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        };
 
-            unsigned int indices[] = {  // note that we start from 0!
-                0, 1, 3,   // first triangle
-                1, 2, 3    // second triangle
-            };  
+        unsigned int indices[] = {  // note that we start from 0!
+            0, 1, 3,   // first triangle
+            1, 2, 3    // second triangle
+        };  
 
-            m_vertex_buffer = new fm::VertexBuffer(vertices, sizeof(vertices), fm::VertexBuffer::STATIC_DRAW);
+        m_vertex_buffer = new fm::VertexBuffer(vertices, sizeof(vertices), fm::STATIC_DRAW);
 
-            m_index_buffer = new fm::IndexBuffer(indices, sizeof(indices), fm::IndexBuffer::STATIC_DRAW);
-            
-            int s = sizeof(float) * 7;
+        m_index_buffer = new fm::IndexBuffer(indices, sizeof(indices), fm::STATIC_DRAW);
+        
+        int s = sizeof(float) * 7;
 
-            m_element_buffer = new fm::ElementBuffer{
-                {fm::Element::Type::VEC3_FLOAT, "gPos", false},
-                {fm::Element::Type::VEC4_FLOAT, "gColor", false},
-            };
+        m_element_buffer = new fm::ElementBuffer{
+            {fm::Element::Type::VEC3_FLOAT, "gPos", false},
+            {fm::Element::Type::VEC4_FLOAT, "gColor", false},
+        };
 
-            m_shader = new fm::Shader("Fragmentbox/src/VertexShader.vert", "Fragmentbox/src/FragmentShader.frag");
+        m_shader = new fm::Shader("Fragmentbox/src/VertexShader.vert", "Fragmentbox/src/FragmentShader.frag");
     }
 
     void render(SDL_Window* window) override
@@ -50,19 +52,15 @@ public:
         FM_GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
         FM_GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 
-        m_vertex_buffer->bind();
+        m_vertex_buffer->Bind();
 
-        m_element_buffer->bind();
+        m_element_buffer->Bind();
 
-        m_index_buffer->bind();
+        m_index_buffer->Bind();
 
-        m_shader->bind();
+        m_shader->Bind();
 
         FM_GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
-
-        m_element_buffer->unbind();
-
-        m_shader->unbind();
 
         SDL_GL_SwapWindow(window);
     }

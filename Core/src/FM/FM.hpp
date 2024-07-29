@@ -16,10 +16,7 @@
 
 // Renderer
 #include "SDL2/SDL.h"
-#include "System/Renderer/VertexBuffer.hpp"
-#include "System/Renderer/IndexBuffer.hpp"
-#include "System/Renderer/ElementBuffer.hpp"
-#include "System/Renderer/Shader.hpp"
+#include "FM/Platfrom/Renderer/API.hpp"
 
 
 // Profile
