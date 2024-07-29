@@ -46,25 +46,25 @@ namespace fm
         template<typename T>
         constexpr auto operator+(Vec2<T> vec)
         {
-            return { x + vec.x, y + vec.y };
+            return Vec2{ x + vec.x, y + vec.y };
         }
         
         template<typename T>
         constexpr auto operator-(Vec2<T> vec)
         {
-            return { x - vec.x, y - vec.y };
+            return Vec2{ x - vec.x, y - vec.y };
         }
 
         template<typename T>
         constexpr auto operator*(Vec2<T> vec)
         {
-            return { x * vec.x, y * vec.y };
+            return Vec2{ x * vec.x, y * vec.y };
         }
         
         template<typename T>
         constexpr auto operator/(Vec2<T> vec)
         {
-            return { x / vec.x, y / vec.y };
+            return Vec2{ x / vec.x, y / vec.y };
         }
         
         template<typename T>
@@ -100,7 +100,7 @@ namespace fm
 
         constexpr auto angle(float angle)
         {
-            return { std::sin(angle) * x, std::cos(angle) * y  };
+            return Vec2{ std::sin(angle) * x, std::cos(angle) * y  };
         }
 
         template<typename T>
