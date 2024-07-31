@@ -49,7 +49,7 @@ namespace fm
         }
 
         xcb_screen_iterator_t iter;
-        int screen_nbr;
+        int screen_nbr = 0;
         iter = xcb_setup_roots_iterator(xcb_get_setup(window_context->connection));
         for (int32_t i = screen_nbr; i > 0; i--)
         {

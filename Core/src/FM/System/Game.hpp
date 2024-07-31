@@ -8,8 +8,6 @@
 
 #include "FM/System/Scene.hpp"
 #include "FM/System/Time/Time.hpp"
-#include "FM/System/Input/Keyboard.hpp"
-#include "FM/System/Input/Mouse.hpp"
 
 #include "FM/Platfrom/Renderer/API.hpp"
 
@@ -106,15 +104,9 @@ namespace fm
 
             window.PollEvent();
 
-            fm::Keyboard::reset();
-            fm::Mouse::getSelf().reset();
-
             SDL_Event e; 
             while( SDL_PollEvent( &e ) )
             { 
-                fm::Keyboard::handleEvent(e);
-                fm::Mouse::getSelf().handleEvent(e);
-
                 if( e.type == SDL_QUIT ) 
                     quit(); 
 
