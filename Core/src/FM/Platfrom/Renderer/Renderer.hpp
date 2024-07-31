@@ -10,6 +10,8 @@ namespace fm
         typedef void* Context;
 
         Renderer();
+        Renderer(const Renderer&) = delete;
+        Renderer& operator=(const Renderer&) = delete;
         
         ~Renderer();
 

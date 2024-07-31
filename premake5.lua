@@ -131,6 +131,9 @@ project "Fragmentbox"
         "Core",
         "tracy",
         "SDL2",
+        "xcb",
+        "X11",
+        "X11-xcb"
     }
 
     filter "system:linux"

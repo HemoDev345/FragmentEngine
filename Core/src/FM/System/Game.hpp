@@ -13,6 +13,8 @@
 
 #include "FM/Platfrom/Renderer/API.hpp"
 
+#include "FM/Platfrom/Window/Window.hpp"
+
 namespace fm
 {
     class Game
@@ -22,6 +24,8 @@ namespace fm
             : m_window(NULL), m_quit(false), m_running(false)
         {
             Time::init();
+
+            window.Init({100.f, 100.f}, {360u, 360u}, "Hello");
 
             m_window = SDL_CreateWindow(
                 name,
@@ -99,11 +103,13 @@ namespace fm
         void pollEvents()
         {
             FM_PROFILE_FUNC;
-            SDL_Event e; 
+
+            window.PollEvent();
 
             fm::Keyboard::reset();
             fm::Mouse::getSelf().reset();
 
+            SDL_Event e; 
             while( SDL_PollEvent( &e ) )
             { 
                 fm::Keyboard::handleEvent(e);
@@ -128,12 +134,14 @@ namespace fm
             }
 
             m_quit = true;
+            window.Shutdown();
             SDL_DestroyWindow( m_window );
             SDL_Quit();
         }
 
     private:
         SDL_Window* m_window;
+        Window window;
 
         // fm::Renderer m_renderer;
         // std::mutex m_render_mutex;
