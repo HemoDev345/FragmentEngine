@@ -1,4 +1,3 @@
-#include "FM/Core/SDLCall.hpp"
 #include "FM/System/Game.hpp"
 
 extern fm::Game* getGame();

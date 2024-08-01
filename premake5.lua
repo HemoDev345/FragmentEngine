@@ -72,7 +72,7 @@ project "Core"
         
         defines {
             "FM_PLATFORM_LINUX",
-            "FM_RENDER_API_OPENGL"
+--            "FM_RENDER_API_OPENGL"
         }
 
     filter "system:windows"

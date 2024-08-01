@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "FM/Platfrom/Window/Window.hpp"
 
 namespace fm
 {
@@ -15,12 +15,12 @@ namespace fm
         
         ~Renderer();
 
-        void static Init(SDL_Window* window) { getSelf().InitImpl(window); };
+        void static Init(Window& window) { getSelf().InitImpl(window); };
 
     private:
         Context m_context;
 
-        void InitImpl(SDL_Window* window);
+        void InitImpl(Window& window);
         static Renderer& getSelf();
 
     };

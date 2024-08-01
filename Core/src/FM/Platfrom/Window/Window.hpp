@@ -17,8 +17,9 @@ namespace fm
         void Init(fm::Vec2f position, fm::Vec2u size, const char* name);
         void Shutdown();
 
-        void PollEvent();
+        bool PollEvent();
 
+        void InitRenderContext();
     private:
         Context m_context;
 

@@ -19,26 +19,11 @@ namespace fm
     {
     public:
         Game(const char* name, unsigned int w, unsigned h)
-            : m_window(NULL), m_quit(false), m_running(false)
         {
             Time::init();
 
-            window.Init({100.f, 100.f}, {360u, 360u}, "Hello");
+            m_window.Init({360, 360}, {620, 460}, "Hello");
 
-            m_window = SDL_CreateWindow(
-                name,
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
-                w,
-                h,
-                SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-            );
-
-            if(m_window == NULL)
-            {
-                FM_SDL_LOG_ERROR;
-                exit(EXIT_FAILURE);
-            }
 
             Renderer::Init(m_window);
         }
@@ -84,6 +69,8 @@ namespace fm
 
                 pollEvents();
             }
+
+            quit();
         }
     private:
          void update()
@@ -94,25 +81,15 @@ namespace fm
 
         void render()
         {
-            m_scene_stack.top()->render(m_window);
+            // m_scene_stack.top()->render(m_window);
         } 
 
 
         void pollEvents()
         {
             FM_PROFILE_FUNC;
-
-            window.PollEvent();
-
-            SDL_Event e; 
-            while( SDL_PollEvent( &e ) )
-            { 
-                if( e.type == SDL_QUIT ) 
-                    quit(); 
-
-
-            } 
             
+            m_quit = !m_window.PollEvent();            
         }
 
         void quit()
@@ -126,14 +103,11 @@ namespace fm
             }
 
             m_quit = true;
-            window.Shutdown();
-            SDL_DestroyWindow( m_window );
-            SDL_Quit();
+            m_window.Shutdown();
         }
 
     private:
-        SDL_Window* m_window;
-        Window window;
+        Window m_window;
 
         // fm::Renderer m_renderer;
         // std::mutex m_render_mutex;
