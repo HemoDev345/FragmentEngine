@@ -25,10 +25,9 @@ struct WindowContext
     Atom delete_window;
 
 #if defined(FM_RENDER_API_OPENGL)
+    GLXFBConfig best_fbc_config;
     GLXContext context;
-#ifend
-
-    Colormap cmap;
+#endif
 };
 
 namespace fm
@@ -74,11 +73,6 @@ namespace fm
             XCloseDisplay(window_context->display);
         }
 
-        FM_LOG_INFO("GLX Version: {0}.{1}", major_glx, minor_glx);
-		FM_LOG_INFO("GLX server version: " << glXQueryServerString(window_context->display, window_context->screen_id, GLX_VERSION) << "\n";
-		FM_LOG_INFO("GLX server vendoe: " << glXQueryServerString(window_context->display, window_context->screen_id, GLX_VENDOR) << "\n";
-		FM_LOG_INFO("GLX server extensions:\n\t " << glXQueryServerString(window_context->display, window_context->screen_id, GLX_EXTENSIONS) << "\n";
-        
         GLint attribs[] = {
             GLX_X_RENDERABLE    , True,
             GLX_DRAWABLE_TYPE   , GLX_WINDOW_BIT,
@@ -100,7 +94,7 @@ namespace fm
         GLXFBConfig* fbc = glXChooseFBConfig(window_context->display, window_context->window, attribs, &fbcount);
         if (fbc == 0) 
         {
-            FM_LOG_INFO("Failed to retrieve framebuffer.\n";
+            FM_LOG_ERROR("Failed to retrieve framebuffer");
             return;
         }
 
@@ -127,20 +121,20 @@ namespace fm
             XFree( vi );
         }
 
-        GLXFBConfig best_fbc_config = fbc[ best_fbc ];
+        window_context->best_fbc_config = fbc[ best_fbc ];
         XFree( fbc );
 
-        XVisualInfo* visual = glXGetVisualFromFBConfig(window_context->display, best_fbc_config);
+        XVisualInfo* visual = glXGetVisualFromFBConfig(window_context->display, window_context->best_fbc_config);
         if (visual == 0) 
         {
-            FM_LOG_INFO("Could not create correct visual window.\n";
+            FM_LOG_ERROR("Could not create correct visual window");
             return;
         }
 
         XSetWindowAttributes attar;
         
         attar.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | ExposureMask | PointerMotionMask | StructureNotifyMask;
-        attar.colormap = window_context->cmap = XCreateColormap(window_context->display, RootWindow(window_context->display, visual->screen), visual->visual, AllocNone);
+        attar.colormap = XCreateColormap(window_context->display, RootWindow(window_context->display, visual->screen), visual->visual, AllocNone);
         attar.background_pixmap = None;
 
         window_context->window = XCreateWindow(
@@ -164,24 +158,7 @@ namespace fm
         XSetWMProtocols(window_context->display, window_context->window, &window_context->delete_window, 1);        
         
         XMapWindow(window_context->display, window_context->window);
-
-        const char *glxExts = glXQueryExtensionsString(window_context->display,  window_context->screen_id);
         
-        glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-        glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((const GLubyte*)"glXCreateContextAttribsARB");
-
-        int context_attribs[] = {
-            GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-            GLX_CONTEXT_MINOR_VERSION_ARB, 3,
-            None
-        };
-
-
-        window_context->context = glXCreateContextAttribsARB(window_context->display, best_fbc_config, 0, true, context_attribs);
-        XSync(window_context->display, False);
-        
-        glXMakeCurrent(window_context->display, window_context->window, window_context->context );
-        gladLoadGLLoader((GLADloadproc)glXGetProcAddress);
     }
 
     void Window::Shutdown()
@@ -190,7 +167,7 @@ namespace fm
         WindowContext* window_context = (WindowContext*)m_context;
         XAutoRepeatOn(window_context->display);  
         XDestroyWindow(window_context->display, window_context->window);
-        
+        glXDestroyContext(window_context->display, window_context->context);        
         XCloseDisplay(window_context->display);
         
 
@@ -224,95 +201,24 @@ namespace fm
     {
         WindowContext* window_context = (WindowContext*)m_context;
 
-#if 1 //defined (FM_RENDER_API_OPENGL)
-        GLint major_glx, minor_glx = 0;
-        glXQueryVersion(window_context->display, &major_glx, &minor_glx);
-        if (major_glx <= 1 && minor_glx < 2) {
-            FM_LOG_ERROR("GLX 1.2 or greater is required");
-            XCloseDisplay(window_context->display);
-        }
-
-        FM_LOG_INFO("GLX Version: {0}.{1}", major_glx, minor_glx);
-		FM_LOG_INFO("GLX server version: " << glXQueryServerString(window_context->display, window_context->screen_id, GLX_VERSION) << "\n";
-		FM_LOG_INFO("GLX server vendoe: " << glXQueryServerString(window_context->display, window_context->screen_id, GLX_VENDOR) << "\n";
-		FM_LOG_INFO("GLX server extensions:\n\t " << glXQueryServerString(window_context->display, window_context->screen_id, GLX_EXTENSIONS) << "\n";
+#if defined (FM_RENDER_API_OPENGL)
+        const char *glxExts = glXQueryExtensionsString(window_context->display,  window_context->screen_id);
         
-        
-
-        GLint attribs[] = {
-            GLX_X_RENDERABLE    , True,
-            GLX_DRAWABLE_TYPE   , GLX_WINDOW_BIT,
-            GLX_RENDER_TYPE     , GLX_RGBA_BIT,
-            GLX_X_VISUAL_TYPE   , GLX_TRUE_COLOR,
-            GLX_RED_SIZE        , 8,
-            GLX_GREEN_SIZE      , 8,
-            GLX_BLUE_SIZE       , 8,
-            GLX_ALPHA_SIZE      , 8,
-            GLX_DEPTH_SIZE      , 24,
-            GLX_STENCIL_SIZE    , 8,
-            GLX_DOUBLEBUFFER    , True,
-            //GLX_SAMPLE_BUFFERS  , 1,
-            //GLX_SAMPLES         , 4,
-            None
-        };
-
-        int fbcount;
-        GLXFBConfig* fbc = glXChooseFBConfig(window_context->display, window_context->window, attribs, &fbcount);
-        if (fbc == 0) 
-        {
-            FM_LOG_INFO("Failed to retrieve framebuffer.\n";
-            return;
-        }
-
-        int best_fbc = -1, worst_fbc = -1, best_num_samp = -1, worst_num_samp = 999;
-        for (int i = 0; i < fbcount; ++i)
-        {
-            XVisualInfo *vi = glXGetVisualFromFBConfig( window_context->display, fbc[i] );
-            if ( vi != 0) 
-            {
-                int samp_buf, samples;
-                glXGetFBConfigAttrib(window_context->display, fbc[i], GLX_SAMPLE_BUFFERS, &samp_buf );
-                glXGetFBConfigAttrib(window_context->display, fbc[i], GLX_SAMPLES       , &samples  );
-                //FM_LOG_INFO("  Matching fbconfig " << i << ", SAMPLE_BUFFERS = " << samp_buf << ", SAMPLES = " << samples << ".\n";
-
-                if ( best_fbc < 0 || (samp_buf && samples > best_num_samp) ) 
-                {
-                    best_fbc = i;
-                    best_num_samp = samples;
-                }
-                if ( worst_fbc < 0 || !samp_buf || samples < worst_num_samp )
-                    worst_fbc = i;
-                worst_num_samp = samples;
-            }
-            XFree( vi );
-        }
-
-        GLXFBConfig best_fbc_config = fbc[ best_fbc ];
-        XFree( fbc );
-
-        XVisualInfo* visual = glXGetVisualFromFBConfig(window_context->display, best_fbc_config);
-        if (visual == 0) 
-        {
-            FM_LOG_INFO("Could not create correct visual window.\n";
-            XCloseDisplay(window_context->display);
-        }
-
         glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
         glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((const GLubyte*)"glXCreateContextAttribsARB");
 
         int context_attribs[] = {
             GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
             GLX_CONTEXT_MINOR_VERSION_ARB, 3,
-            GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
             None
         };
-        
-        const char *glxExts = glXQueryExtensionsString(window_context->display,  window_context->screen_id);
-        
-        window_context->context = glXCreateContextAttribsARB(window_context->display, best_fbc_config, 0, true, context_attribs);
-        XSync(window_context->display, False);
 
+
+        window_context->context = glXCreateContextAttribsARB(window_context->display, window_context->best_fbc_config, 0, true, context_attribs);
+        XSync(window_context->display, False);
+        
         glXMakeCurrent(window_context->display, window_context->window, window_context->context);
+        gladLoadGLLoader((GLADloadproc)glXGetProcAddress);
 #endif
     }
 

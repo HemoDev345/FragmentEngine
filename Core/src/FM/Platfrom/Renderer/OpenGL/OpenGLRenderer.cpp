@@ -19,11 +19,12 @@ namespace fm
 
     void Renderer::InitImpl(Window& window)
     {
-        std::cout << "GL Vendor: " << glGetString(GL_VENDOR) << "\n";
-        std::cout << "GL Renderer: " << glGetString(GL_RENDERER) << "\n";
-        std::cout << "GL Version: " << glGetString(GL_VERSION) << "\n";
-        std::cout << "GL Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
-   }
+        FM_LOG_INFO("GL Vendor: {}", (const char*)glGetString(GL_VENDOR));
+        FM_LOG_INFO("GL Renderer: {}", (const char*)glGetString(GL_RENDERER));
+        FM_LOG_INFO("GL Version: {}", (const char*)glGetString(GL_VERSION));
+        FM_LOG_INFO("GL Shading Language: {}", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+        window.InitRenderContext();
+    }
 
     Renderer &Renderer::getSelf() 
     {
