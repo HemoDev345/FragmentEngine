@@ -12,6 +12,7 @@
 #include "FM/Platfrom/Renderer/API.hpp"
 
 #include "FM/Platfrom/Window/Window.hpp"
+#include <GL/glx.h>
 
 namespace fm
 {
@@ -81,7 +82,10 @@ namespace fm
 
         void render()
         {
-            // m_scene_stack.top()->render(m_window);
+            m_scene_stack.top()->render(NULL);
+
+
+            m_window.Display();
         } 
 
 

@@ -20,6 +20,9 @@ namespace fm
         bool PollEvent();
 
         void InitRenderContext();
+
+        void Display();
+
     private:
         Context m_context;
 
