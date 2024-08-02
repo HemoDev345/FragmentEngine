@@ -26,7 +26,7 @@ struct WindowContext
 
 #if defined(FM_RENDER_API_OPENGL)
     GLXContext context;
-#end
+#ifend
 
     Colormap cmap;
 };
