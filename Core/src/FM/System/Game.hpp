@@ -82,10 +82,7 @@ namespace fm
 
         void render()
         {
-            m_scene_stack.top()->render(NULL);
-
-
-            m_window.Display();
+            m_scene_stack.top()->render(m_window);
         } 
 
 

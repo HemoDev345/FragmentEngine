@@ -2,6 +2,8 @@
 
 #include "FM/System/Game.hpp"
 #include "FM/System/EntitySystem.hpp"
+#include "FM/Platfrom/Window/Window.hpp"
+
 
 namespace fm
 {
@@ -29,7 +31,7 @@ namespace fm
 
         }
 
-        virtual void render(SDL_Window* window)
+        virtual void render(Window& window)
         {
         }
 

@@ -35,8 +35,6 @@ public:
 
         m_index_buffer = new fm::IndexBuffer(indices, sizeof(indices), fm::STATIC_DRAW);
         
-        int s = sizeof(float) * 7;
-
         m_element_buffer = new fm::ElementBuffer{
             {fm::Element::Type::VEC3_FLOAT, "gPos", false},
             {fm::Element::Type::VEC4_FLOAT, "gColor", false},
@@ -45,7 +43,7 @@ public:
         m_shader = new fm::Shader("Fragmentbox/src/VertexShader.vert", "Fragmentbox/src/FragmentShader.frag");
     }
 
-    void render(SDL_Window* window) override
+    void render(fm::Window& window) override
     {
         FM_PROFILE_SCOPE("render");
         FM_GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
@@ -60,6 +58,8 @@ public:
         m_shader->Bind();
 
         FM_GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL));
+
+        window.Display();
     }
 
     void destory() override

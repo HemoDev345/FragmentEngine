@@ -19,10 +19,10 @@ namespace fm
 
     void Renderer::InitImpl(Window& window)
     {
-        FM_LOG_INFO("GL Vendor: {}", (const char*)glGetString(GL_VENDOR));
-        FM_LOG_INFO("GL Renderer: {}", (const char*)glGetString(GL_RENDERER));
-        FM_LOG_INFO("GL Version: {}", (const char*)glGetString(GL_VERSION));
-        FM_LOG_INFO("GL Shading Language: {}", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+        FM_LOG_INFO("GL Vendor: {}", (char*)glGetString(GL_VENDOR));
+        FM_LOG_INFO("GL Renderer: {}", (char*)glGetString(GL_RENDERER));
+        FM_LOG_INFO("GL Version: {}", (char*)glGetString(GL_VERSION));
+        FM_LOG_INFO("GL Shading Language: {}", (char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
         window.InitRenderContext();
     }
 

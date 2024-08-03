@@ -170,7 +170,6 @@ namespace fm
         glXDestroyContext(window_context->display, window_context->context);        
         XCloseDisplay(window_context->display);
         
-
         delete window_context;
     }
 
@@ -180,20 +179,23 @@ namespace fm
 
         // TODO: Event System
         XEvent event;
-        XNextEvent(window_context->display, &event);
 
-        switch (event.type)
+        while (XPending(window_context->display))
         {
-            case Expose:
-                FM_LOG_INFO("Expose: x:{0}, y:{1}, w:{2}, h:{3}", event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
-                break;
+            XNextEvent(window_context->display, &event);
+            switch (event.type)
+            {
+                case Expose:
+                    FM_LOG_INFO("Expose: x:{0}, y:{1}, w:{2}, h:{3}", event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+                    break;
 
-            case ClientMessage:
-                if (event.xclient.data.l[0] == window_context->delete_window) {
-                    return false; 
-                }
-                break;
-        } 
+                case ClientMessage:
+                    if (event.xclient.data.l[0] == window_context->delete_window) {
+                        return false; 
+                    }
+                    break;
+            }
+        }
         return true;
     }
 
@@ -212,7 +214,6 @@ namespace fm
             GLX_CONTEXT_MINOR_VERSION_ARB, 3,
             None
         };
-
 
         window_context->context = glXCreateContextAttribsARB(window_context->display, window_context->best_fbc_config, 0, true, context_attribs);
         XSync(window_context->display, False);
