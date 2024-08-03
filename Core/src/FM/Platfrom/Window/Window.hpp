@@ -2,6 +2,8 @@
 
 #include <FM/Utility/Vec2.hpp>
 
+#include <FM/Core/Input.hpp>
+
 namespace fm
 {
     class Window
@@ -25,7 +27,8 @@ namespace fm
 
     private:
         Context m_context;
-
+        
+        int KeySymToKeyboradKey(int key);
     };
 
 }

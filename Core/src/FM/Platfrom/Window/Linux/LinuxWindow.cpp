@@ -1,3 +1,5 @@
+#include "FM/Core/InputTypes.hpp"
+#include <X11/X.h>
 #if defined(FM_PLATFORM_LINUX)
 
 #include <X11/Xlib.h>
@@ -177,16 +179,65 @@ namespace fm
     {
         WindowContext* window_context = (WindowContext*)m_context;
 
-        // TODO: Event System
         XEvent event;
-
         while (XPending(window_context->display))
         {
             XNextEvent(window_context->display, &event);
             switch (event.type)
             {
                 case Expose:
-                    FM_LOG_INFO("Expose: x:{0}, y:{1}, w:{2}, h:{3}", event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+                    FM_LOG_INFO("Expose: w:{0}, h:{1}", event.xexpose.width, event.xexpose.height);
+                    break;
+                case KeyPress:
+                case KeyRelease:
+                {
+                    bool press = event.xkey.type == KeyPress;
+
+                    KeySym xkey = XKeycodeToKeysym(window_context->display, event.xkey.keycode, 0);
+                    KeyboardKey key = (KeyboardKey)KeySymToKeyboradKey((int)xkey);
+                    
+                    Input::GetSelf().SetKey(key, press);
+
+                    FM_LOG_INFO("Key({0}) is {1}", (int)key, press ? "Pressed" : "Released"); 
+                }
+                break;
+
+                case ButtonPress:
+                case ButtonRelease:
+                {
+                    bool press = event.xbutton.type == ButtonPress;
+                    
+                    MouseButton button;
+                    switch (event.xbutton.button) 
+                    {
+                        case Button1:
+                            button = MouseButton::MOUSE_BUTTON_LEFT;
+                            break;
+                        case Button2:
+                            button = MouseButton::MOUSE_BUTTON_MIDDLE;
+                            break;
+                        case Button3:
+                            button = MouseButton::MOUSE_BUTTON_RIGHT;
+                            break;
+                        case Button4:
+                            Input::GetSelf().SetMouseScroll((int)press * -1);
+                            FM_LOG_INFO("Mouse Wheel is {}", press ? "Scrolled Up" : "Stoped Scrolling");
+                            continue;
+                        case Button5:
+                            Input::GetSelf().SetMouseScroll((int)press);
+                            FM_LOG_INFO("Mouse Wheel is {}", press ? "Scrolled Down" :  "Stoped Scrolling");
+                            continue;
+                    }
+
+                    Input::GetSelf().SetButton(button, press);
+
+                    FM_LOG_INFO("Button({0}) is {1}", (int)button, press ? "Pressed" : "Released"); 
+                    break;
+                }
+
+                case MotionNotify:
+                    Input::GetSelf().SetMousePosition(fm::Vec2i(event.xmotion.x, event.xmotion.y));
+                    FM_LOG_INFO("Mouse is moved to x:{0}, y:{1}", event.xmotion.x, event.xmotion.y); 
                     break;
 
                 case ClientMessage:
@@ -230,6 +281,291 @@ namespace fm
         
         glXSwapBuffers(window_context->display, window_context->window);
     }
+    
+    int Window::KeySymToKeyboradKey(int key)
+    {
+        switch (key)
+        {
+            case XK_BackSpace:
+                return KEYBOARD_KEY_BACKSPACE;
+            case XK_Return:
+                return KEYBOARD_KEY_ENTER;
+            case XK_Tab:
+                return KEYBOARD_KEY_TAB;
+
+            case XK_Pause:
+                return KEYBOARD_KEY_PAUSE;
+            case XK_Caps_Lock:
+                return KEYBOARD_KEY_CAPITAL;
+
+            case XK_Escape:
+                return KEYBOARD_KEY_ESCAPE;
+
+            case XK_Mode_switch:
+                return KEYBOARD_KEY_MODECHANGE;
+
+            case XK_space:
+                return KEYBOARD_KEY_SPACE;
+            case XK_Prior:
+                return KEYBOARD_KEY_PAGEUP;
+            case XK_Next:
+                return KEYBOARD_KEY_PAGEDOWN;
+            case XK_End:
+                return KEYBOARD_KEY_END;
+            case XK_Home:
+                return KEYBOARD_KEY_HOME;
+            case XK_Left:
+                return KEYBOARD_KEY_LEFT;
+            case XK_Up:
+                return KEYBOARD_KEY_UP;
+            case XK_Right:
+                return KEYBOARD_KEY_RIGHT;
+            case XK_Down:
+                return KEYBOARD_KEY_DOWN;
+            case XK_Select:
+                return KEYBOARD_KEY_SELECT;
+            case XK_Print:
+                return KEYBOARD_KEY_PRINT;
+            case XK_Execute:
+                return KEYBOARD_KEY_EXECUTE;
+                // case XK_snapshot: return KEYBOARD_KEY_SNAPSHOT; // not supported
+            case XK_Insert:
+                return KEYBOARD_KEY_INSERT;
+            case XK_Delete:
+                return KEYBOARD_KEY_DELETE;
+            case XK_Help:
+                return KEYBOARD_KEY_HELP;
+
+            case XK_Meta_L:
+                return KEYBOARD_KEY_LSUPER; // TODO: not sure this is right
+            case XK_Meta_R:
+                return KEYBOARD_KEY_RSUPER;
+                // case XK_apps: return KEYBOARD_KEY_APPS; // not supported
+
+                // case XK_sleep: return KEYBOARD_KEY_SLEEP; //not supported
+
+            case XK_KP_0:
+                return KEYBOARD_KEY_NUMPAD0;
+            case XK_KP_1:
+                return KEYBOARD_KEY_NUMPAD1;
+            case XK_KP_2:
+                return KEYBOARD_KEY_NUMPAD2;
+            case XK_KP_3:
+                return KEYBOARD_KEY_NUMPAD3;
+            case XK_KP_4:
+                return KEYBOARD_KEY_NUMPAD4;
+            case XK_KP_5:
+                return KEYBOARD_KEY_NUMPAD5;
+            case XK_KP_6:
+                return KEYBOARD_KEY_NUMPAD6;
+            case XK_KP_7:
+                return KEYBOARD_KEY_NUMPAD7;
+            case XK_KP_8:
+                return KEYBOARD_KEY_NUMPAD8;
+            case XK_KP_9:
+                return KEYBOARD_KEY_NUMPAD9;
+            case XK_multiply:
+                return KEYBOARD_KEY_MULTIPLY;
+            case XK_KP_Add:
+                return KEYBOARD_KEY_ADD;
+            case XK_KP_Separator:
+                return KEYBOARD_KEY_SEPARATOR;
+            case XK_KP_Subtract:
+                return KEYBOARD_KEY_SUBTRACT;
+            case XK_KP_Decimal:
+                return KEYBOARD_KEY_DECIMAL;
+            case XK_KP_Divide:
+                return KEYBOARD_KEY_DIVIDE;
+            case XK_F1:
+                return KEYBOARD_KEY_F1;
+            case XK_F2:
+                return KEYBOARD_KEY_F2;
+            case XK_F3:
+                return KEYBOARD_KEY_F3;
+            case XK_F4:
+                return KEYBOARD_KEY_F4;
+            case XK_F5:
+                return KEYBOARD_KEY_F5;
+            case XK_F6:
+                return KEYBOARD_KEY_F6;
+            case XK_F7:
+                return KEYBOARD_KEY_F7;
+            case XK_F8:
+                return KEYBOARD_KEY_F8;
+            case XK_F9:
+                return KEYBOARD_KEY_F9;
+            case XK_F10:
+                return KEYBOARD_KEY_F10;
+            case XK_F11:
+                return KEYBOARD_KEY_F11;
+            case XK_F12:
+                return KEYBOARD_KEY_F12;
+            case XK_F13:
+                return KEYBOARD_KEY_F13;
+            case XK_F14:
+                return KEYBOARD_KEY_F14;
+            case XK_F15:
+                return KEYBOARD_KEY_F15;
+            case XK_F16:
+                return KEYBOARD_KEY_F16;
+            case XK_F17:
+                return KEYBOARD_KEY_F17;
+            case XK_F18:
+                return KEYBOARD_KEY_F18;
+            case XK_F19:
+                return KEYBOARD_KEY_F19;
+            case XK_F20:
+                return KEYBOARD_KEY_F20;
+            case XK_F21:
+                return KEYBOARD_KEY_F21;
+            case XK_F22:
+                return KEYBOARD_KEY_F22;
+            case XK_F23:
+                return KEYBOARD_KEY_F23;
+            case XK_F24:
+                return KEYBOARD_KEY_F24;
+
+            case XK_Num_Lock:
+                return KEYBOARD_KEY_NUMLOCK;
+            case XK_Scroll_Lock:
+                return KEYBOARD_KEY_SCROLL;
+
+            case XK_KP_Equal:
+                return KEYBOARD_KEY_NUMPAD_EQUAL;
+
+            case XK_Shift_L:
+                return KEYBOARD_KEY_LSHIFT;
+            case XK_Shift_R:
+                return KEYBOARD_KEY_RSHIFT;
+            case XK_Control_L:
+                return KEYBOARD_KEY_LCONTROL;
+            case XK_Control_R:
+                return KEYBOARD_KEY_RCONTROL;
+            case XK_Alt_L:
+                return KEYBOARD_KEY_LALT;
+            case XK_Alt_R:
+                return KEYBOARD_KEY_RALT;
+
+            case XK_semicolon:
+                return KEYBOARD_KEY_SEMICOLON;
+            case XK_plus:
+                return KEYBOARD_KEY_EQUAL;
+            case XK_comma:
+                return KEYBOARD_KEY_COMMA;
+            case XK_minus:
+                return KEYBOARD_KEY_MINUS;
+            case XK_period:
+                return KEYBOARD_KEY_PERIOD;
+            case XK_slash:
+                return KEYBOARD_KEY_SLASH;
+            case XK_grave:
+                return KEYBOARD_KEY_GRAVE;
+
+            case XK_0:
+                return KEYBOARD_KEY_0;
+            case XK_1:
+                return KEYBOARD_KEY_1;
+            case XK_2:
+                return KEYBOARD_KEY_2;
+            case XK_3:
+                return KEYBOARD_KEY_3;
+            case XK_4:
+                return KEYBOARD_KEY_4;
+            case XK_5:
+                return KEYBOARD_KEY_5;
+            case XK_6:
+                return KEYBOARD_KEY_6;
+            case XK_7:
+                return KEYBOARD_KEY_7;
+            case XK_8:
+                return KEYBOARD_KEY_8;
+            case XK_9:
+                return KEYBOARD_KEY_9;
+
+            case XK_a:
+            case XK_A:
+                return KEYBOARD_KEY_A;
+            case XK_b:
+            case XK_B:
+                return KEYBOARD_KEY_B;
+            case XK_c:
+            case XK_C:
+                return KEYBOARD_KEY_C;
+            case XK_d:
+            case XK_D:
+                return KEYBOARD_KEY_D;
+            case XK_e:
+            case XK_E:
+                return KEYBOARD_KEY_E;
+            case XK_f:
+            case XK_F:
+                return KEYBOARD_KEY_F;
+            case XK_g:
+            case XK_G:
+                return KEYBOARD_KEY_G;
+            case XK_h:
+            case XK_H:
+                return KEYBOARD_KEY_H;
+            case XK_i:
+            case XK_I:
+                return KEYBOARD_KEY_I;
+            case XK_j:
+            case XK_J:
+                return KEYBOARD_KEY_J;
+            case XK_k:
+            case XK_K:
+                return KEYBOARD_KEY_K;
+            case XK_l:
+            case XK_L:
+                return KEYBOARD_KEY_L;
+            case XK_m:
+            case XK_M:
+                return KEYBOARD_KEY_M;
+            case XK_n:
+            case XK_N:
+                return KEYBOARD_KEY_N;
+            case XK_o:
+            case XK_O:
+                return KEYBOARD_KEY_O;
+            case XK_p:
+            case XK_P:
+                return KEYBOARD_KEY_P;
+            case XK_q:
+            case XK_Q:
+                return KEYBOARD_KEY_Q;
+            case XK_r:
+            case XK_R:
+                return KEYBOARD_KEY_R;
+            case XK_s:
+            case XK_S:
+                return KEYBOARD_KEY_S;
+            case XK_t:
+            case XK_T:
+                return KEYBOARD_KEY_T;
+            case XK_u:
+            case XK_U:
+                return KEYBOARD_KEY_U;
+            case XK_v:
+            case XK_V:
+                return KEYBOARD_KEY_V;
+            case XK_w:
+            case XK_W:
+                return KEYBOARD_KEY_W;
+            case XK_x:
+            case XK_X:
+                return KEYBOARD_KEY_X;
+            case XK_y:
+            case XK_Y:
+                return KEYBOARD_KEY_Y;
+            case XK_z:
+            case XK_Z:
+                return KEYBOARD_KEY_Z;
+
+            default:
+                return 0;
+        }    
+    }
+
 }
 
 
