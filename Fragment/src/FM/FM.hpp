@@ -3,10 +3,8 @@
 // Core
 #include "Core/EntryPoint.hpp"
 #include "Core/Log.hpp"
-
-// System
-#include "System/Game.hpp"
-#include "System/Scene.hpp"
+#include "Core/Game.hpp"
+#include "Core/Scene.hpp"
 
 #include "Utility/Vec2.hpp"
 

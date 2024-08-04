@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FM/Core/InputTypes.hpp"
-#include "FM/Utility/Vec2.hpp"
+#include "FM/Core/Util/Vec2.hpp"
 
 namespace fm
 {

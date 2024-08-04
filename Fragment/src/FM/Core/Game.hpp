@@ -6,7 +6,7 @@
 #include "FM/Core/Assret.hpp"
 #include "FM/Core/Profile.hpp"
 
-#include "FM/System/Scene.hpp"
+#include "FM/Core/Scene.hpp"
 
 #include "FM/Platfrom/Renderer/API.hpp"
 

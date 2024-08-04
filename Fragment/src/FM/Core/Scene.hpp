@@ -1,7 +1,7 @@
 #pragma once
 
-#include "FM/System/Game.hpp"
-#include "FM/System/EntitySystem.hpp"
+#include "FM/Core/Game.hpp"
+#include "FM/Core/EntitySystem.hpp"
 #include "FM/Platfrom/Window/Window.hpp"
 
 

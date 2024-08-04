@@ -1,4 +1,4 @@
-#include "FM/System/Game.hpp"
+#include "FM/Core/Game.hpp"
 
 extern fm::Game* getGame();
 

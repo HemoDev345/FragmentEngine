@@ -16,8 +16,8 @@ project "tracy"
     cppdialect "C++11"
     staticruntime "on"
     
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "-%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "-%{prj.name}")
 
     files {
         "vender/tracy/public/TracyClient.cpp",
