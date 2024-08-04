@@ -3,7 +3,6 @@
 // Core
 #include "Core/EntryPoint.hpp"
 #include "Core/Log.hpp"
-#include "Core/Assret.hpp"
 
 // System
 #include "System/Game.hpp"
