@@ -1,10 +1,8 @@
 #if defined(FM_RENDER_API_OPENGL)
 
-#include "FM/Platfrom/Renderer/ElementBuffer.hpp"
-
-#include <glad/glad.h>
-#include "FM/Platfrom/Renderer/OpenGL/GLCall.hpp"
+#include "FM/Platfrom/Renderer/ElementLayout.hpp"
 #include "FM/Core/Log.hpp"
+#include <glad/glad.h>
 
 namespace fm
 {
@@ -77,69 +75,26 @@ namespace fm
         return 0;   
     }
 
-    ElementBuffer::ElementBuffer(std::initializer_list<Element> elements)
+    ElementLayout::ElementLayout(std::initializer_list<Element> elements)
         : m_elements(elements)
     {
         InitElements();
-
-        FM_GL_CALL(glGenVertexArrays(1, &m_id));
-        FM_GL_CALL(glBindVertexArray(m_id));
-        // GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
-
-        for (uint32_t i = 0; i < m_elements.size(); i++)
-            FM_GL_CALL(glVertexAttribPointer(
-                i, 
-                m_elements[i].TypeCount(),
-                m_elements[i].ConvertType(),
-                m_elements[i].normalized, 
-                m_stride,
-                (void*)m_elements[i].offset
-            ));
-
     }
 
-    void ElementBuffer::Bind() const
+    ElementLayout::ElementLayout()
     {
-        for (int i = 0; i < m_elements.size(); i++)
-            FM_GL_CALL(glEnableVertexAttribArray(i));
-        FM_GL_CALL(glBindVertexArray(m_id));
     }
 
-    void ElementBuffer::Unbind() const
+    void ElementLayout::SetData(std::initializer_list<Element> elements)
     {
-        FM_GL_CALL(glBindVertexArray(0));
-        for (int i = 0; i < m_elements.size(); i++)
-            FM_GL_CALL(glDisableVertexAttribArray(i));
-    }
-
-
-    void ElementBuffer::setData(std::initializer_list<Element> elements)
-    {
-        m_elements = elements; 
+        m_elements = elements;
         InitElements();
-
-        FM_GL_CALL(glGenVertexArrays(1, &m_id));
-        FM_GL_CALL(glBindVertexArray(m_id));
-
-        for (uint32_t i = 0; i < m_elements.size(); i++)
-            FM_GL_CALL(glVertexAttribPointer(
-                i, 
-                m_elements[i].TypeCount(),
-                m_elements[i].ConvertType(),
-                m_elements[i].normalized, 
-                m_stride,
-                (void*)m_elements[i].offset
-            ));
     }
 
-    void ElementBuffer::Destroy() const
-    {
-        FM_GL_CALL(glDeleteVertexArrays(1, &m_id));
-    }
-
-    void ElementBuffer::InitElements()
+    void ElementLayout::InitElements()
     {
         uint32_t offset = 0u;
+        m_stride = 0u;
         m_stride = 0u;
         for (auto& element : m_elements)
         {

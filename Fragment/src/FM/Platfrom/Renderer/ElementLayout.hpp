@@ -32,18 +32,18 @@ namespace fm
     };
 
 
-    class ElementBuffer
+    class ElementLayout
     {
     public:
-        ElementBuffer(std::initializer_list<Element> elements);
+        ElementLayout();
+        ElementLayout(std::initializer_list<Element> elements);
+        
+        Element& operator[](size_t index) { return m_elements[index]; }; 
+        const Element& operator[](size_t index) const { return m_elements[index]; }; 
+        size_t Size() { return m_elements.size(); };
+        uint32_t GetStride() { return m_stride; }
 
-        void Bind() const;
-
-        void Unbind() const;
-
-        void setData(std::initializer_list<Element> elements);
-
-        void Destroy() const;
+        void SetData(std::initializer_list<Element> elements);
 
     private:
         void InitElements();

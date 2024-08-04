@@ -2,20 +2,25 @@
   {
     "arguments": [
       "/usr/bin/g++",
-      "-DTRACY_ENABLE",
-      "-DNDEBUG",
+      "-DFM_PLATFORM_LINUX",
+      "-DFM_RENDER_API_OPENGL",
+      "-DFM_DEBUG",
+      "-Isrc",
+      "-I../vender/tracy/public",
+      "-I../vender/spdlog/include",
+      "-I../vender/glad/include",
       "-m64",
       "-g",
-      "-std=c++11",
+      "-std=c++17",
       "-g",
       "-c",
       "-o",
-      "../../bin-int/Debug-linux-x86_64/tracy/TracyClient.o",
-      "public/TracyClient.cpp"
+      "../bin-int/Debug-linux-x86_64/Fragment/OpenGLElementLayout.o",
+      "src/FM/Platfrom/Renderer/OpenGL/OpenGLElementLayout.cpp"
     ],
-    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/vender/tracy",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/vender/tracy/public/TracyClient.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/tracy/TracyClient.o"
+    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLElementLayout.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragment/OpenGLElementLayout.o"
   },
   {
     "arguments": [
@@ -26,7 +31,6 @@
       "-Isrc",
       "-I../vender/tracy/public",
       "-I../vender/spdlog/include",
-      "-I../vender/SDL2/include",
       "-I../vender/glad/include",
       "-m64",
       "-g",
@@ -34,12 +38,12 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Core/GLCall.o",
-      "src/FM/Platfrom/Renderer/OpenGL/GLCall.cpp"
+      "../bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexArray.o",
+      "src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexArray.cpp"
     ],
-    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Core",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Core/src/FM/Platfrom/Renderer/OpenGL/GLCall.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Core/GLCall.o"
+    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexArray.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexArray.o"
   },
   {
     "arguments": [
@@ -50,7 +54,6 @@
       "-Isrc",
       "-I../vender/tracy/public",
       "-I../vender/spdlog/include",
-      "-I../vender/SDL2/include",
       "-I../vender/glad/include",
       "-m64",
       "-g",
@@ -58,12 +61,12 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Core/OpenGLElementBuffer.o",
-      "src/FM/Platfrom/Renderer/OpenGL/OpenGLElementBuffer.cpp"
+      "../bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexBuffer.o",
+      "src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexBuffer.cpp"
     ],
-    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Core",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Core/src/FM/Platfrom/Renderer/OpenGL/OpenGLElementBuffer.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Core/OpenGLElementBuffer.o"
+    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexBuffer.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexBuffer.o"
   },
   {
     "arguments": [
@@ -71,10 +74,11 @@
       "-DFM_PLATFORM_LINUX",
       "-DFM_RENDER_API_OPENGL",
       "-DFM_DEBUG",
+      "-DFM_PROFILE",
       "-Isrc",
+      "-I../Fragment/src",
       "-I../vender/tracy/public",
       "-I../vender/spdlog/include",
-      "-I../vender/SDL2/include",
       "-I../vender/glad/include",
       "-m64",
       "-g",
@@ -82,35 +86,11 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Core/OpenGLIndexBuffer.o",
-      "src/FM/Platfrom/Renderer/OpenGL/OpenGLIndexBuffer.cpp"
+      "../bin-int/Debug-linux-x86_64/Fragmentbox/main.o",
+      "src/main.cpp"
     ],
-    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Core",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Core/src/FM/Platfrom/Renderer/OpenGL/OpenGLIndexBuffer.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Core/OpenGLIndexBuffer.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/g++",
-      "-DFM_PLATFORM_LINUX",
-      "-DFM_RENDER_API_OPENGL",
-      "-DFM_DEBUG",
-      "-Isrc",
-      "-I../vender/tracy/public",
-      "-I../vender/spdlog/include",
-      "-I../vender/SDL2/include",
-      "-I../vender/glad/include",
-      "-m64",
-      "-g",
-      "-std=c++17",
-      "-g",
-      "-c",
-      "-o",
-      "../bin-int/Debug-linux-x86_64/Core/OpenGLRenderer.o",
-      "src/FM/Platfrom/Renderer/OpenGL/OpenGLRenderer.cpp"
-    ],
-    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Core",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Core/src/FM/Platfrom/Renderer/OpenGL/OpenGLRenderer.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Core/OpenGLRenderer.o"
+    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragmentbox",
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragmentbox/src/main.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragmentbox/main.o"
   }
 ]

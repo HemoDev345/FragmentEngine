@@ -7,7 +7,6 @@
 #include "FM/Core/Profile.hpp"
 
 #include "FM/System/Scene.hpp"
-#include "FM/System/Time/Time.hpp"
 
 #include "FM/Platfrom/Renderer/API.hpp"
 
@@ -21,8 +20,6 @@ namespace fm
     public:
         Game(const char* name, unsigned int w, unsigned h)
         {
-            Time::init();
-
             m_window.Init({360, 360}, {620, 460}, "Hello");
 
 
@@ -62,7 +59,6 @@ namespace fm
             
             while (m_quit == false)
             {
-                fm::Time::restart();
                 FM_PROFILE_FRAME;
                 update();
 

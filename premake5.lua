@@ -91,8 +91,8 @@ project "glad"
         runtime "Release"
         optimize  "on"
     
-project "Core"
-    location "Core" 
+project "Fragment"
+    location "Fragment" 
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
@@ -133,9 +133,6 @@ project "Core"
         }
 
         links {
-            'glad',
-            'tracy',
-            'GL'
         }
 
     filter "configurations:Debug"
@@ -170,14 +167,14 @@ project "Fragmentbox"
     
     includedirs {
         "%{prj.name}/src",
-        "Core/src",
+        "Fragment/src",
         "vender/tracy/public",
         "vender/spdlog/include",
         "vender/glad/include",
     }
     
     links {
-        'Core'
+        'Fragment'
     }
 
     filter "system:linux"        
