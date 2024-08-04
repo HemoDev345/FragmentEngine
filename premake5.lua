@@ -34,7 +34,6 @@ project "tracy"
 
     filter "configurations:Debug"
         buildoptions "-g"
-
         defines "NDEBUG"
         runtime "Debug"
         symbols  "on"
@@ -44,6 +43,53 @@ project "tracy"
         runtime "Release"
         optimize  "on"
     
+    filter "configurations:Dist"
+        defines "DEBUG"
+        runtime "Release"
+        optimize  "on"
+
+
+project "glad"
+    location "vender/glad"
+    kind "StaticLib"
+    language "C"
+    staticruntime "on"
+    
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files {
+        "vender/glad/src/glad.c",
+    }
+        
+    includedirs {
+        "vender/glad/include/"
+    }
+
+    links {
+        "pthread",
+        "dl"
+    }
+
+    defines {
+        "TRACY_ENABLE",
+    }
+
+    filter "configurations:Debug"
+        buildoptions "-g"
+        defines "NDEBUG"
+        runtime "Debug"
+        symbols  "on"
+    
+    filter "configurations:Release"
+        defines "DEBUG"
+        runtime "Release"
+        optimize  "on"
+    
+    filter "configurations:Dist"
+        defines "DEBUG"
+        runtime "Release"
+        optimize  "on"
     
 project "Core"
     location "Core" 
@@ -64,22 +110,32 @@ project "Core"
         "%{prj.name}/src",
         "vender/tracy/public",
         "vender/spdlog/include",
-        "vender/SDL2/include",
         "vender/glad/include",
     }
 
-    filter "system:linux"
-        
+    filter "system:linux"        
         defines {
             "FM_PLATFORM_LINUX",
             "FM_RENDER_API_OPENGL"
+        }
+
+        links {
+            'glad',
+            'tracy',
+            'X11',
+            'GL'
         }
 
     filter "system:windows"
         
         defines {
             "FM_PLATFORM_WINDOWS",
-            "FM_RENDER_API_OPENGL"
+        }
+
+        links {
+            'glad',
+            'tracy',
+            'GL'
         }
 
     filter "configurations:Debug"
@@ -110,7 +166,6 @@ project "Fragmentbox"
     files {
         "%{prj.name}/src/**.hpp",
         "%{prj.name}/src/**.cpp",
-        "vender/glad/src/**.c",
     }
     
     includedirs {
@@ -119,36 +174,30 @@ project "Fragmentbox"
         "vender/tracy/public",
         "vender/spdlog/include",
         "vender/glad/include",
-        "vender/stb_image/include",
-        "vender/SDL2/include",
     }
-
-    libdirs {
-        "vender/SDL2/linux"
-    }
-
+    
     links {
-        "Core",
-        "tracy",
-        "SDL2",
-        "X11",
-        "GL"
+        'Core'
     }
 
-    filter "system:linux"
-        
+    filter "system:linux"        
         defines {
             "FM_PLATFORM_LINUX",
             "FM_RENDER_API_OPENGL"
+        }
+
+        links {
+            'glad',
+            'tracy',
+            'X11',
+            'GL'
         }
 
     filter "system:windows"
         
         defines {
             "FM_PLATFORM_WINDOWS",
-            "FM_RENDER_API_OPENGL"
         }
-
         
     filter "configurations:Debug"
         defines { "FM_DEBUG", "FM_PROFILE" }
