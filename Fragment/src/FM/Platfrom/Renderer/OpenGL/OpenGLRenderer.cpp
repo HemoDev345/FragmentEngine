@@ -1,4 +1,4 @@
-#if 1
+#if FM_RENDER_API_OPENGL
 
 #include "FM/Platfrom/Renderer/Renderer.hpp"
 #include "FM/Core/Log.hpp"

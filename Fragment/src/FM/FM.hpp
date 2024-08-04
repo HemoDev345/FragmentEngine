@@ -6,7 +6,7 @@
 #include "Core/Game.hpp"
 #include "Core/Scene.hpp"
 
-#include "Utility/Vec2.hpp"
+#include "Core/Util/Vec2.hpp"
 
 // Renderer
 #include "FM/Platfrom/Renderer/API.hpp"

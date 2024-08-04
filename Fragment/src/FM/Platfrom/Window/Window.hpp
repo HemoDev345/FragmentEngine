@@ -1,6 +1,6 @@
 #pragma once
 
-#include <FM/Utility/Vec2.hpp>
+#include <FM/Core/Util/Vec2.hpp>
 
 #include <FM/Core/Input.hpp>
 
