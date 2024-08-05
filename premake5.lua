@@ -16,8 +16,8 @@ project "tracy"
     cppdialect "C++11"
     staticruntime "on"
     
-    targetdir ("bin/" .. outputdir .. "-%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "-%{prj.name}")
+    targetdir ("bin/" .. outputdir)
+    objdir ("bin-int/" .. outputdir)
 
     files {
         "vender/tracy/public/TracyClient.cpp",
@@ -55,8 +55,8 @@ project "glad"
     language "C"
     staticruntime "on"
     
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir)
+    objdir ("bin-int/" .. outputdir)
 
     files {
         "vender/glad/src/glad.c",
@@ -98,8 +98,8 @@ project "Fragment"
     cppdialect "C++17"
     staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir)
+    objdir ("bin-int/" .. outputdir)
 
     files {
         "%{prj.name}/src/**.hpp",
@@ -157,8 +157,8 @@ project "Fragmentbox"
     language "C++"
     cppdialect "C++17"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir)
+    objdir ("bin-int/" .. outputdir)
 
     files {
         "%{prj.name}/src/**.hpp",

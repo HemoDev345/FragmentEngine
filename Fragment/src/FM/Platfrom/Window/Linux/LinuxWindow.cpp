@@ -1,5 +1,3 @@
-#include "FM/Core/InputTypes.hpp"
-#include <X11/X.h>
 #if defined(FM_PLATFORM_LINUX)
 
 #include <X11/Xlib.h>
@@ -11,9 +9,7 @@
 
 #if defined(FM_RENDER_API_OPENGL)
     #include <glad/glad.h>
-
     #include <GL/glx.h>
-    
     typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 #endif
 
@@ -67,7 +63,9 @@ namespace fm
 
         window_context->screen = DefaultScreenOfDisplay(window_context->display);
         window_context->screen_id = DefaultScreen(window_context->display);
-        
+
+#if defined(FM_RENDER_API_OPENGL)
+        //// GLX ////        
         GLint major_glx, minor_glx = 0;
         glXQueryVersion(window_context->display, &major_glx, &minor_glx);
         if (major_glx <= 1 && minor_glx < 2) {
@@ -127,6 +125,8 @@ namespace fm
         XFree( fbc );
 
         XVisualInfo* visual = glXGetVisualFromFBConfig(window_context->display, window_context->best_fbc_config);
+        //// GLX ////
+#endif
         if (visual == 0) 
         {
             FM_LOG_ERROR("Could not create correct visual window");
@@ -169,7 +169,9 @@ namespace fm
         WindowContext* window_context = (WindowContext*)m_context;
         XAutoRepeatOn(window_context->display);  
         XDestroyWindow(window_context->display, window_context->window);
+#if defined(FM_RENDER_API_OPENGL)
         glXDestroyContext(window_context->display, window_context->context);        
+#endif
         XCloseDisplay(window_context->display);
         
         delete window_context;
@@ -263,6 +265,7 @@ namespace fm
         int context_attribs[] = {
             GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
             GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+            GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
             None
         };
 
