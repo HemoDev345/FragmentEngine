@@ -1,7 +1,7 @@
 #pragma once
 
 #include <FM/Core/Util/Vec2.hpp>
-
+#include <FM/Core/Event.hpp>
 #include <FM/Core/Input.hpp>
 
 namespace fm
@@ -19,7 +19,7 @@ namespace fm
         void Init(fm::Vec2f position, fm::Vec2u size, const char* name);
         void Shutdown();
 
-        bool PollEvent();
+        bool PollEvent(Event& event);
 
         void InitRenderContext();
 

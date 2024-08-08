@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FM/Core/Event.hpp"
 #include "FM/Core/InputTypes.hpp"
 #include "FM/Core/Util/Vec2.hpp"
 
@@ -50,6 +51,8 @@ namespace fm
 
         void SetMouseScroll(int scroll);
 
+        void HandleInput(Event& event);
+
         bool m_keys_buffer[255 /* KEYBOARD_KEY_MAX */];
         bool m_buttons_buffer[3 /* MOUSE_BUTTON_MAX */];
         fm::Vec2i m_mouse_position;
@@ -57,7 +60,7 @@ namespace fm
 
         static Input& GetSelf();
         
-        friend class Window;
+        friend class Game;
     };
 
 }

@@ -15,12 +15,12 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Fragment/OpenGLElementLayout.o",
-      "src/FM/Platfrom/Renderer/OpenGL/OpenGLElementLayout.cpp"
+      "../bin-int/Debug-linux-x86_64/Debug/Fragment/Input.o",
+      "src/FM/Core/Input.cpp"
     ],
     "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLElementLayout.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragment/OpenGLElementLayout.o"
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Core/Input.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Debug/Fragment/Input.o"
   },
   {
     "arguments": [
@@ -38,12 +38,12 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexArray.o",
-      "src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexArray.cpp"
+      "../bin-int/Debug-linux-x86_64/Debug/Fragment/OpenGLRenderer.o",
+      "src/FM/Platfrom/Renderer/OpenGL/OpenGLRenderer.cpp"
     ],
     "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexArray.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexArray.o"
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLRenderer.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Debug/Fragment/OpenGLRenderer.o"
   },
   {
     "arguments": [
@@ -61,12 +61,35 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexBuffer.o",
-      "src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexBuffer.cpp"
+      "../bin-int/Debug-linux-x86_64/Debug/Fragment/LinuxWindow.o",
+      "src/FM/Platfrom/Window/Linux/LinuxWindow.cpp"
     ],
     "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
-    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Renderer/OpenGL/OpenGLVertexBuffer.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragment/OpenGLVertexBuffer.o"
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Window/Linux/LinuxWindow.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Debug/Fragment/LinuxWindow.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-DFM_PLATFORM_LINUX",
+      "-DFM_RENDER_API_OPENGL",
+      "-DFM_DEBUG",
+      "-Isrc",
+      "-I../vender/tracy/public",
+      "-I../vender/spdlog/include",
+      "-I../vender/glad/include",
+      "-m64",
+      "-g",
+      "-std=c++17",
+      "-g",
+      "-c",
+      "-o",
+      "../bin-int/Debug-linux-x86_64/Debug/Fragment/WindowsWindow.o",
+      "src/FM/Platfrom/Window/Windows/WindowsWindow.cpp"
+    ],
+    "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment",
+    "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragment/src/FM/Platfrom/Window/Windows/WindowsWindow.cpp",
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Debug/Fragment/WindowsWindow.o"
   },
   {
     "arguments": [
@@ -86,11 +109,11 @@
       "-g",
       "-c",
       "-o",
-      "../bin-int/Debug-linux-x86_64/Fragmentbox/main.o",
+      "../bin-int/Debug-linux-x86_64/Debug/Fragmentbox/main.o",
       "src/main.cpp"
     ],
     "directory": "/home/ibrahim/Dev/c++/FragmentEngine/Fragmentbox",
     "file": "/home/ibrahim/Dev/c++/FragmentEngine/Fragmentbox/src/main.cpp",
-    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Fragmentbox/main.o"
+    "output": "/home/ibrahim/Dev/c++/FragmentEngine/bin-int/Debug-linux-x86_64/Debug/Fragmentbox/main.o"
   }
 ]

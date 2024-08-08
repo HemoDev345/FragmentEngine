@@ -1,4 +1,5 @@
-#if defined(FM_PLATFORM_LINUX)
+#include <X11/X.h>
+#if 1 //defined(FM_PLATFORM_LINUX)
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -6,6 +7,7 @@
 #include <X11/Xproto.h>
 #include "FM/Platfrom/Window/Window.hpp"
 #include "FM/Core/Log.hpp"
+#include "FM/Core/Event.hpp"
 
 #if defined(FM_RENDER_API_OPENGL)
     #include <glad/glad.h>
@@ -21,6 +23,10 @@ struct WindowContext
     Window window;
     int screen_id;
     Atom delete_window;
+
+    bool focus;
+    fm::Vec2i size;
+    bool open;
 
 #if defined(FM_RENDER_API_OPENGL)
     GLXFBConfig best_fbc_config;
@@ -50,7 +56,6 @@ namespace fm
     {
         m_context = new WindowContext;
         WindowContext* window_context = (WindowContext*)m_context; 
-        
         window_context->display = XOpenDisplay(NULL);
 
         if (window_context->display == NULL)
@@ -135,7 +140,9 @@ namespace fm
 
         XSetWindowAttributes attar;
         
-        attar.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | ExposureMask | PointerMotionMask | StructureNotifyMask;
+        attar.event_mask = EnterWindowMask | LeaveWindowMask | ExposureMask |
+            StructureNotifyMask | FocusChangeMask |
+            KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask;
         attar.colormap = XCreateColormap(window_context->display, RootWindow(window_context->display, visual->screen), visual->visual, AllocNone);
         attar.background_pixmap = None;
 
@@ -161,11 +168,11 @@ namespace fm
         
         XMapWindow(window_context->display, window_context->window);
         
+        window_context->open = true; 
     }
 
     void Window::Shutdown()
     {
-        FM_LOG_INFO("Window Shuting Down");
         WindowContext* window_context = (WindowContext*)m_context;
         XAutoRepeatOn(window_context->display);  
         XDestroyWindow(window_context->display, window_context->window);
@@ -177,79 +184,135 @@ namespace fm
         delete window_context;
     }
 
-    bool Window::PollEvent()
+    bool Window::PollEvent(Event& event)
     {
         WindowContext* window_context = (WindowContext*)m_context;
+        
+        if (XPending(window_context->display) == 0) return false;
 
-        XEvent event;
-        while (XPending(window_context->display))
+        XEvent xevent;
+        XNextEvent(window_context->display, &xevent);
+        switch (xevent.type)
         {
-            XNextEvent(window_context->display, &event);
-            switch (event.type)
-            {
-                case Expose:
-                    FM_LOG_INFO("Expose: w:{0}, h:{1}", event.xexpose.width, event.xexpose.height);
-                    break;
-                case KeyPress:
-                case KeyRelease:
+            case ClientMessage:
+                if (xevent.xclient.data.l[0] == window_context->delete_window) 
                 {
-                    bool press = event.xkey.type == KeyPress;
-
-                    KeySym xkey = XKeycodeToKeysym(window_context->display, event.xkey.keycode, 0);
-                    KeyboardKey key = (KeyboardKey)KeySymToKeyboradKey((int)xkey);
-                    
-                    Input::GetSelf().SetKey(key, press);
-
-                    FM_LOG_INFO("Key({0}) is {1}", (int)key, press ? "Pressed" : "Released"); 
+                    event.type = EVENT_WINDOW_DISTROY;
+                    event.window.type = EVENT_WINDOW_DISTROY;
+                    window_context->open = false; 
                 }
                 break;
 
-                case ButtonPress:
-                case ButtonRelease:
+            case Expose:
+                event.type = EVENT_WINDOW_RESIZE;
+                event.window.type = EVENT_WINDOW_RESIZE;
+                event.window.size = { xevent.xexpose.width, xevent.xexpose.height };
+                window_context->size = { xevent.xexpose.width, xevent.xexpose.height };
+                break;
+
+            case ConfigureNotify:
+                event.type = EVENT_WINDOW_MOTION;
+                event.window.type = EVENT_WINDOW_MOTION;
+                event.window.position = { xevent.xconfigure.x, xevent.xconfigure.y };
+                event.window.size = { xevent.xconfigure.width, xevent.xconfigure.height };
+                break;
+
+            case FocusIn:
+            case FocusOut:
                 {
-                    bool press = event.xbutton.type == ButtonPress;
-                    
+                    bool focus = xevent.xfocus.type == FocusIn;
+                    event.type = focus ? EVENT_WINDOW_FOCUS : EVENT_WINDOW_UNFOCUS;
+                    event.window.type = event.type;
+                    event.window.focus = focus;
+                    window_context->focus = focus;
+                }
+                break;
+
+
+            case KeyPress:
+            case KeyRelease:
+                {
+                    bool press = xevent.xkey.type == KeyPress;
+
+                    KeySym xkey = XKeycodeToKeysym(window_context->display, xevent.xkey.keycode, 0);
+                    KeyboardKey key = (KeyboardKey)KeySymToKeyboradKey((int)xkey);
+
+                    event.type = press ? EVENT_KEYBOARD_KEY_PRESS : EVENT_KEYBOARD_KEY_RELEASE;
+                    event.keyboard.type = event.type;
+                    event.keyboard.press = press;
+                    event.keyboard.key = key;
+                }
+                break;
+
+            case ButtonPress:
+            case ButtonRelease:
+                {
+                    bool press = xevent.xbutton.type == ButtonPress;
+
                     MouseButton button;
-                    switch (event.xbutton.button) 
+                    switch (xevent.xbutton.button) 
                     {
                         case Button1:
-                            button = MouseButton::MOUSE_BUTTON_LEFT;
+                            button = MouseButton::MOUSE_BUTTON_RIGHT;
+                            event.type = press ? EVENT_MOUSE_BUTTON_PRESS : EVENT_MOUSE_BUTTON_RELEASE;
+                            event.mouse.type = event.type;
+                            event.mouse.press = press;
+                            event.mouse.button = button;
                             break;
+
                         case Button2:
-                            button = MouseButton::MOUSE_BUTTON_MIDDLE;
+                            button = MouseButton::MOUSE_BUTTON_RIGHT;
+                            event.type = press ? EVENT_MOUSE_BUTTON_PRESS : EVENT_MOUSE_BUTTON_RELEASE;
+                            event.mouse.type = event.type;
+                            event.mouse.press = press;
+                            event.mouse.button = button;
                             break;
+
                         case Button3:
                             button = MouseButton::MOUSE_BUTTON_RIGHT;
+                            event.type = press ? EVENT_MOUSE_BUTTON_PRESS : EVENT_MOUSE_BUTTON_RELEASE;
+                            event.mouse.type = event.type;
+                            event.mouse.press = press;
+                            event.mouse.button = button;
                             break;
+
                         case Button4:
-                            Input::GetSelf().SetMouseScroll((int)press * -1);
-                            FM_LOG_INFO("Mouse Wheel is {}", press ? "Scrolled Up" : "Stoped Scrolling");
-                            continue;
+                            event.type = EVENT_MOUSE_SCROLL;
+                            event.mouse.type = EVENT_MOUSE_SCROLL;
+                            event.mouse.delta_scroll = (int)press * -1;
+                            event.mouse.type = event.type;
+                            break;
+
                         case Button5:
-                            Input::GetSelf().SetMouseScroll((int)press);
-                            FM_LOG_INFO("Mouse Wheel is {}", press ? "Scrolled Down" :  "Stoped Scrolling");
-                            continue;
+                            event.type = EVENT_MOUSE_SCROLL;
+                            event.mouse.type = EVENT_MOUSE_SCROLL;
+                            event.mouse.delta_scroll = (int)press * 1;
+                            event.mouse.type = event.type;
+                            break;
                     }
-
-                    Input::GetSelf().SetButton(button, press);
-
-                    FM_LOG_INFO("Button({0}) is {1}", (int)button, press ? "Pressed" : "Released"); 
                     break;
                 }
 
-                case MotionNotify:
-                    Input::GetSelf().SetMousePosition(fm::Vec2i(event.xmotion.x, event.xmotion.y));
-                    FM_LOG_INFO("Mouse is moved to x:{0}, y:{1}", event.xmotion.x, event.xmotion.y); 
-                    break;
+            case MotionNotify:
+                event.type = EVENT_MOUSE_MOTION;
+                event.mouse.type = EVENT_MOUSE_MOTION;
+                event.mouse.position = { xevent.xmotion.x, xevent.xmotion.y };
+                break;
 
-                case ClientMessage:
-                    if (event.xclient.data.l[0] == window_context->delete_window) {
-                        return false; 
-                    }
-                    break;
-            }
+            case LeaveNotify:
+                event.type = EVENT_MOUSE_LEAVE;
+                event.mouse.type = EVENT_MOUSE_LEAVE;
+                event.mouse.focus = false;
+                break;
+
+            case EnterNotify:
+                event.type = EVENT_MOUSE_ENTER;
+                event.mouse.type = EVENT_MOUSE_ENTER;
+                event.mouse.focus = true;
+                break;
         }
         return true;
+
     }
 
     void Window::InitRenderContext()

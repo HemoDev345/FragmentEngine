@@ -30,6 +30,7 @@ project "tracy"
 
     defines {
         "TRACY_ENABLE",
+        "TRACY_TIMER_FALLBACK"
     }
 
     filter "configurations:Debug"

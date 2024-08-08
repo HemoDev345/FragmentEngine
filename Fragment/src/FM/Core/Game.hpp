@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "FM/Core/Assret.hpp"
+#include "FM/Core/Event.hpp"
 #include "FM/Core/Profile.hpp"
 
 #include "FM/Core/Scene.hpp"
@@ -86,7 +87,21 @@ namespace fm
         {
             FM_PROFILE_FUNC;
             
-            m_quit = !m_window.PollEvent();            
+            Event event;
+            m_window.PollEvent(event);
+            
+                switch (event.type)
+                {
+                    case EVENT_WINDOW_DISTROY:
+                        m_quit = true;
+                        break;
+                    default:
+                        break;
+                };
+
+                Input::GetSelf().HandleInput(event);
+
+
         }
 
         void quit()

@@ -78,7 +78,33 @@ namespace fm
     {
         return m_mouse_scroll;
     }
-    
+
+    void Input::HandleInput(Event& event)
+    {
+        switch (event.type) 
+        {
+            case EVENT_KEYBOARD_KEY_PRESS:
+            case EVENT_KEYBOARD_KEY_RELEASE:
+                m_keys_buffer[event.keyboard.key] = event.keyboard.press;
+                break;
+
+            case EVENT_MOUSE_BUTTON_PRESS:
+            case EVENT_MOUSE_BUTTON_RELEASE:
+                m_buttons_buffer[event.mouse.button] = event.mouse.press;
+                break;
+
+            case EVENT_MOUSE_MOTION:
+                m_mouse_position = event.mouse.position;
+                break;
+
+            case EVENT_MOUSE_SCROLL:
+                m_mouse_scroll = event.mouse.delta_scroll;
+
+            default:
+                break;
+        }
+    }
+
     void Input::SetKey(KeyboardKey key, bool value)
     {
         m_keys_buffer[key] = value;
