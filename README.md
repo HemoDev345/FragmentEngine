@@ -1,15 +1,11 @@
-# FragmentEngine
-
-This is Game Engine, It uses SDL2 for windowing, OpenGL/glad for graphics and Spdlog for logging
+# The Fragment Game Engine
+Fragment is beginner attempt to make a game engine, Written in C++, It support only Linux for now, Use X11 for Linux windowing and OpenGL for Rendering
 
 # Installation
 * Linux:
   ```
   $ git clone https://github.com/HemoDev345/FragmentEngine.git
-  $ vender/premake5 gmake && make
+  $ vender/premake-5.0.0-beta2/premake5 gmake
+  $ make
   $ bin/Debug-linux-x86_64/Fragmentbox/Fragmentbox
   ```
-
-# Special thanks To
-[TheCherno](https://www.youtube.com/@thecherno) for making [Game Engine Series](https://www.youtube.com/watch?v=JxIZbV_XjAs), It is a good way to start leaning about game engines, and helped my make this engine :)
-    
